@@ -261,7 +261,12 @@ const Movie = (props) => {
       </div>
 
       <div className="footer">
-        <a href="github.com" className="footericon">
+        <a
+          href="https://github.com/RizkyRajitha/probrosnetwork"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footericon"
+        >
           <img
             className="img-responsive"
             src="https://img.icons8.com/ios-filled/100/000000/github.png"
