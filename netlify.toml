@@ -1,2 +1,4 @@
 [build]
-  publish = "client/build"
+  functions = "lambda"
+  command = "npm run build" # the command you run to build this file
+  publish = "build" 

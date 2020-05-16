@@ -11,9 +11,9 @@ app.use(bp.json());
 app.use(require("morgan")("dev"));
 
 const RedisClient = redis.createClient({
-  host: require("./config/env").redishost,
-  port: require("./config/env").redisport,
-  password: require("./config/env").redispass,
+  host: require("./client/config/env").redishost,
+  port: require("./client/config/env").redisport,
+  password: require("./client/config/env").redispass,
 });
 
 const port = process.env.PORT || 5000;
