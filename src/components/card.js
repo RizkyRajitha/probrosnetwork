@@ -5,11 +5,16 @@ const Card = (props) => {
   return (
     <div className=" card profilecard">
       <div className="card-image">
-        <img src={props.avatarurl} className="img-responsive" />
+        <img
+          alt={`${props.avatarurl}'s avatar`}
+          src={props.avatarurl}
+          className="img-responsive"
+        />
       </div>
 
       <div className="card-header">
         <img
+          alt={`${props.countrycode} flag`}
           src={`https://www.countryflags.io/${props.countrycode}/flat/64.png`}
           className="img-responsive"
         />

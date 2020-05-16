@@ -4,6 +4,8 @@ import "./landing.css";
 import Card from "../../components/card";
 import axios from "axios";
 
+const API = "https://heshds.netlify.app";
+
 const Movie = (props) => {
   const [data, setdata] = useState([]);
   const [source, setsource] = useState("");
@@ -15,7 +17,7 @@ const Movie = (props) => {
 
   useEffect(() => {
     axios
-      .get("https://inspiring-fermi-d80538.netlify.app/.netlify/functions/data2")
+      .get(`${API}/.netlify/functions/data2`)
       .then((result) => {
         // console.log(result.data.data);
         setdata(result.data.data);
@@ -31,7 +33,7 @@ const Movie = (props) => {
     setsearchplayerdata(null);
     setisloading(true);
     axios
-      .get(`https://inspiring-fermi-d80538.netlify.app/.netlify/functions/data/:id/${searchplayerid}`)
+      .get(`${API}/.netlify/functions/data/:id/${searchplayerid}`)
       .then((result) => {
         setisloading(false);
         if (!result.data.profile.personaname) {
