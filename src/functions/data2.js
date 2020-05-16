@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 const redis = require("redis");
-
+const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
 const API = "https://api.opendota.com/api";
 const PLAYERS = [
   "264853364",
@@ -12,106 +12,132 @@ const PLAYERS = [
   "210855099",
 ];
 
-const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
+// const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
 
-const RedisClient = redis.createClient({
-  host: REDISHOST || require("../../config/env").redishost,
-  port: REDISPORT || require("../../config/env").redisport,
-  password: REDISPASSWORD || require("../../config/env").redispass,
-});
+let RedisClient = null;
 
-RedisClient.on("error", (err) => {
-  console.log("Error " + err);
-});
+// RedisClient.on("error", (err) => {
+//   console.log("Error " + err);
+// });
 
-RedisClient.on("connect", (err) => {
-  console.log("Connected to redis ☄" + err);
-});
+// RedisClient.on("connect", (err) => {
+//   console.log("Connected to redis ☄" + err);
+// });
 
-let respormise = new Promise((resolve, reject) => {
-  const photosRedisKey = "data:Dota";
-  RedisClient.get(photosRedisKey, (err, data) => {
-    // console.log(err, data);
-    if (!err) {
-      if (data) {
-        resolve({
-          statusCode: 200,
-          body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
-        });
-      } else {
-        const Data = [];
-
-        var promisearr = PLAYERS.map((element) => {
-          return new Promise((resolve, reject) => {
-            fetch(`${API}/players/${element}`)
-              .then((response) => response.json())
-              .then((profiledata) => {
-                fetch(`${API}/players/${element}/wl`)
-                  .then((response) => response.json())
-                  .then((winlossdata) => {
-                    // console.log(profiledata.data);
-                    // console.log(winlossdata.data);
-
-                    var tempdata = {
-                      ...profiledata,
-                      ...winlossdata,
-                    };
-
-                    resolve(tempdata);
-
-                    console.log(tempdata);
-                    // var ne = [...data, tempdata];
-                    // setdata(ne);
-                    Data.push(tempdata);
-                    // setdata((pre) => {
-                    //   return [...pre, tempdata];
-                    // });
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    reject(err);
-                  });
-              })
-              .catch((err) => {
-                console.log(err);
-                reject(err);
-              });
+let respormise = (RedisClient2) => {
+  return new Promise((resolve, reject) => {
+    const photosRedisKey = "data:Dota";
+    RedisClient2.get(photosRedisKey, (err, data) => {
+      // console.log(err, data);
+      if (!err) {
+        if (data) {
+          resolve({
+            statusCode: 200,
+            body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
           });
-        });
+        } else {
+          const Data = [];
 
-        console.log("good stuff");
-        console.log(Data);
+          var promisearr = PLAYERS.map((element) => {
+            return new Promise((resolve, reject) => {
+              fetch(`${API}/players/${element}`)
+                .then((response) => response.json())
+                .then((profiledata) => {
+                  fetch(`${API}/players/${element}/wl`)
+                    .then((response) => response.json())
+                    .then((winlossdata) => {
+                      // console.log(profiledata.data);
+                      // console.log(winlossdata.data);
 
-        Promise.all(promisearr)
-          .then((result) => {
-            console.log(result);
-            RedisClient.setex(photosRedisKey, 3600, JSON.stringify(result));
-            resolve({
-              statusCode: 200,
-              body: JSON.stringify({ source: "OPEN DOTA API", data: result }),
+                      var tempdata = {
+                        ...profiledata,
+                        ...winlossdata,
+                      };
+
+                      resolve(tempdata);
+
+                      console.log(tempdata);
+                      // var ne = [...data, tempdata];
+                      // setdata(ne);
+                      Data.push(tempdata);
+                      // setdata((pre) => {
+                      //   return [...pre, tempdata];
+                      // });
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      reject(err);
+                    });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  reject(err);
+                });
             });
-          })
-          .catch((err) => {
-            console.log(err);
-            reject({ statusCode: 500, body: String(err) });
           });
 
-        // if (Data) {
-        //   return res.json({ source: "api", data: Data });
-        // }
+          console.log("good stuff");
+          console.log(Data);
 
-        //   client.setex(photosRedisKey, 3600, JSON.stringify(photos));
+          Promise.all(promisearr)
+            .then((result) => {
+              console.log(result);
+              RedisClient2.setex(photosRedisKey, 3600, JSON.stringify(result));
+              resolve({
+                statusCode: 200,
+                body: JSON.stringify({ source: "OPEN DOTA API", data: result }),
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              reject({ statusCode: 500, body: String(err) });
+            });
 
-        // Send JSON response to client
+          // if (Data) {
+          //   return res.json({ source: "api", data: Data });
+          // }
+
+          //   client.setex(photosRedisKey, 3600, JSON.stringify(photos));
+
+          // Send JSON response to client
+        }
       }
-    }
+    });
   });
-});
+};
 
 exports.handler = async (event, context) => {
-  const resu = await respormise;
-  console.log(resu);
-  return resu;
+  if (!RedisClient) {
+    RedisClient = redis.createClient({
+      host: REDISHOST || require("../../config/env").redishost,
+      port: REDISPORT || require("../../config/env").redisport,
+      password: REDISPASSWORD || require("../../config/env").redispass,
+    });
+
+    RedisClient.on("error", (err) => {
+      console.log("Error " + err);
+    });
+
+    RedisClient.on("connect", (err) => {
+      console.log("Connected to redis ☄" + err);
+    });
+
+    const resu = await respormise(RedisClient);
+    console.log(resu);
+    return resu;
+  } else {
+    RedisClient.on("error", (err) => {
+      console.log("Error " + err);
+    });
+
+    RedisClient.on("connect", (err) => {
+      console.log("Connected to redis ☄" + err);
+    });
+
+    const resu = await respormise(RedisClient);
+    console.log(resu);
+    return resu;
+  }
 
   // console.log(res);
 };

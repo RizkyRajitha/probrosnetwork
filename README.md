@@ -1,52 +1,16 @@
-![logo](https://img.icons8.com/nolan/64/movie-projector.png)
 
-# MovieShare
+# ProBros Network
 
-## app that can share your favourite movies with your buddies
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2e939bd3-6552-4fb2-8f6e-6ba3f8e40aa8/deploy-status)](https://app.netlify.com/sites/heshds/deploys)
+
+## Dota stats of ProBros 
+
 ----
-
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-movie search powered by  [OMDB API](http://www.omdbapi.com/)
-
-icons [icon8](https://icons8.com/)
+Dota stats powered by  [opendota API](https://www.opendota.com/)
 
 ----
 
-
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
 
