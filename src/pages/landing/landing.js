@@ -15,7 +15,7 @@ const Movie = (props) => {
 
   useEffect(() => {
     axios
-      .get("/data")
+      .get("https://inspiring-fermi-d80538.netlify.app/.netlify/functions/data2")
       .then((result) => {
         // console.log(result.data.data);
         setdata(result.data.data);
