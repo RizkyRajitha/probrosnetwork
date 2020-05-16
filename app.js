@@ -11,15 +11,12 @@ app.use(bp.json());
 app.use(require("morgan")("dev"));
 
 const RedisClient = redis.createClient({
-  host: "redis-10427.c114.us-east-1-4.ec2.cloud.redislabs.com",
-  port: "10427",
-  password: "cn4NJi5nera8k9RoItdTSW1jhJ4zGjYU",
+  host: require("./config/env").redishost,
+  port: require("./config/env").redisport,
+  password: require("./config/env").redispass,
 });
 
 const port = process.env.PORT || 5000;
-
-const mongodbAPI = "mongodb://127.0.0.1:27017/toodoo"; //process.env.mongourl || require("./config/env").mongodbAPI; //keys.mongouri;
-
 const API = "https://api.opendota.com/api";
 const PLAYERS = [
   "264853364",
@@ -165,6 +162,10 @@ app.get("/oneplayer/:id", (req, res) => {
 
 RedisClient.on("error", (err) => {
   console.log("Error " + err);
+});
+
+RedisClient.on("connect", (err) => {
+  console.log("Connected to redis ☄" + err);
 });
 
 app.listen(port, () => {
