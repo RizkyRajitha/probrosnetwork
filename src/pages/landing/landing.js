@@ -31,7 +31,7 @@ const Movie = (props) => {
     setsearchplayerdata(null);
     setisloading(true);
     axios
-      .get(`/oneplayer/${searchplayerid}`)
+      .get(`https://inspiring-fermi-d80538.netlify.app/.netlify/functions/data/:id/${searchplayerid}`)
       .then((result) => {
         setisloading(false);
         if (!result.data.profile.personaname) {

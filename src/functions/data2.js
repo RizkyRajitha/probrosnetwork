@@ -12,12 +12,12 @@ const PLAYERS = [
   "210855099",
 ];
 
-const { redishost, redisport, redispass } = process.env;
+const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
 
 const RedisClient = redis.createClient({
-  host: redishost || require("../../config/env").redishost,
-  port: redisport || require("../../config/env").redisport,
-  password: redispass || require("../../config/env").redispass,
+  host: REDISHOST || require("../../config/env").redishost,
+  port: REDISPORT || require("../../config/env").redisport,
+  password: REDISPASSWORD || require("../../config/env").redispass,
 });
 
 RedisClient.on("error", (err) => {
