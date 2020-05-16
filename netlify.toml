@@ -1,4 +1,4 @@
 [build]
   functions = "lambda"
-  command = "npm run build" # the command you run to build this file
+  command = "yarn build" # the command you run to build this file
   publish = "build" 
