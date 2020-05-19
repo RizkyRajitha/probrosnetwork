@@ -101,12 +101,11 @@ let respormise = (RedisClient2) => {
               };
 
               result.forEach((element) => {
-                // console.log(element.profile.account_id);
-                // console.log(element.mmr_estimate.estimate);
+       
 
                 PLAYERSWNAME.forEach((element2) => {
                   if (element.profile.account_id === parseInt(element2.id)) {
-                    // console.log(element.profile.account_id);
+                    
 
                     var name = PLAYERSWNAME.filter((ele) =>
                       ele.id === element2.id ? true : false
@@ -169,8 +168,7 @@ let respormise = (RedisClient2) => {
                 .then((res) => res.json())
                 .then((result) => {
                   console.log(result);
-                  //send results to the client
-                  // res.json(result);
+               
                 })
                 .catch((err) => {
                   console.log(err);
