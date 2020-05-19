@@ -16,6 +16,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "testapi": "node_modules/.bin/mocha",
     "eject": "react-scripts eject",
     "start:lambda": "netlify-lambda serve src/functions",
     "build:lambda": "netlify-lambda build src/functions"
@@ -39,5 +40,10 @@
   "main": "index.js",
   "proxy": "http://localhost:9000",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^7.1.2"
+  }
 }
