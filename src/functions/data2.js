@@ -39,7 +39,7 @@ let respormise = (RedisClient2) => {
     const photosRedisKey = "data:Dota";
     RedisClient2.get(photosRedisKey, (err, data) => {
       // console.log(err, data);
-      if (!true) {
+      if (!err) {
         if (data) {
           resolve({
             statusCode: 200,
