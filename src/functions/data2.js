@@ -1,6 +1,14 @@
 import fetch from "node-fetch";
 const redis = require("redis");
 const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
+const AIRTABLEAPIKEY =
+  process.env.AIRTABLEAPIKEY || require("../../config/env").AIRTABLEAPIKEY;
+const AIRTABLEBASEID =
+  process.env.AIRTABLEBASEID || require("../../config/env").AIRTABLEBASEID;
+const AIRTABLETABLENAME =
+  process.env.AIRTABLETABLENAME ||
+  require("../../config/env").AIRTABLETABLENAME;
+
 const API = "https://api.opendota.com/api";
 const PLAYERS = [
   "264853364",
@@ -12,32 +20,30 @@ const PLAYERS = [
   "210855099",
 ];
 
-// const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
+const PLAYERSWNAME = [
+  { id: "264853364", name: "flame" },
+  { id: "167596568", name: "cass" },
+  { id: "326010968", name: "casspro" },
+  { id: "140732052", name: "rizky" },
+  { id: "188126754", name: "td" },
+  { id: "172508840", name: "draco" }, //heshan
+  { id: "210855099", name: "rizkypro" },
+];
 
 let RedisClient = null;
-
-// RedisClient.on("error", (err) => {
-//   console.log("Error " + err);
-// });
-
-// RedisClient.on("connect", (err) => {
-//   console.log("Connected to redis ☄" + err);
-// });
 
 let respormise = (RedisClient2) => {
   return new Promise((resolve, reject) => {
     const photosRedisKey = "data:Dota";
     RedisClient2.get(photosRedisKey, (err, data) => {
       // console.log(err, data);
-      if (!err) {
+      if (!true) {
         if (data) {
           resolve({
             statusCode: 200,
             body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
           });
         } else {
-          const Data = [];
-
           var promisearr = PLAYERS.map((element) => {
             return new Promise((resolve, reject) => {
               fetch(`${API}/players/${element}`)
@@ -46,23 +52,12 @@ let respormise = (RedisClient2) => {
                   fetch(`${API}/players/${element}/wl`)
                     .then((response) => response.json())
                     .then((winlossdata) => {
-                      // console.log(profiledata.data);
-                      // console.log(winlossdata.data);
-
                       var tempdata = {
                         ...profiledata,
                         ...winlossdata,
                       };
 
                       resolve(tempdata);
-
-                      console.log(tempdata);
-                      // var ne = [...data, tempdata];
-                      // setdata(ne);
-                      Data.push(tempdata);
-                      // setdata((pre) => {
-                      //   return [...pre, tempdata];
-                      // });
                     })
                     .catch((err) => {
                       console.log(err);
@@ -77,30 +72,252 @@ let respormise = (RedisClient2) => {
           });
 
           console.log("good stuff");
-          console.log(Data);
 
           Promise.all(promisearr)
             .then((result) => {
               console.log(result);
               RedisClient2.setex(photosRedisKey, 3600, JSON.stringify(result));
+
+              result.forEach((element) => {
+                console.log(element.profile.account_id);
+              });
+
               resolve({
                 statusCode: 200,
                 body: JSON.stringify({ source: "OPEN DOTA API", data: result }),
               });
+
+              var datain = {
+                date: new Date().toString(),
+                flame: null,
+                cass: null,
+                casspro: null,
+                rizky: null,
+                td: null,
+                draco: null,
+                rizkypro: null,
+              };
+
+              result.forEach((element) => {
+                // console.log(element.profile.account_id);
+                // console.log(element.mmr_estimate.estimate);
+
+                PLAYERSWNAME.forEach((element2) => {
+                  if (element.profile.account_id === parseInt(element2.id)) {
+                    // console.log(element.profile.account_id);
+
+                    var name = PLAYERSWNAME.filter((ele) =>
+                      ele.id === element2.id ? true : false
+                    );
+
+                    console.log(name);
+
+                    switch (name[0].name) {
+                      case "rizky":
+                        datain.rizky = String(element.mmr_estimate.estimate);
+                        break;
+                      case "draco":
+                        datain.draco = String(element.mmr_estimate.estimate);
+                        break;
+                      case "flame":
+                        datain.flame = String(element.mmr_estimate.estimate);
+                        break;
+                      case "td":
+                        datain.td = String(element.mmr_estimate.estimate);
+                        break;
+                      case "rizkypro":
+                        datain.rizkypro = String(element.mmr_estimate.estimate);
+                        break;
+                      case "cass":
+                        datain.cass = String(element.mmr_estimate.estimate);
+                        break;
+                      case "casspro":
+                        datain.casspro = String(element.mmr_estimate.estimate);
+                        break;
+                      default:
+                        break;
+                    }
+
+                    console.log(datain);
+                  }
+                });
+              });
+
+              var payload = {
+                records: [
+                  {
+                    fields: datain,
+                  },
+                ],
+              };
+
+              console.log(payload);
+
+              fetch(
+                `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}`,
+                {
+                  method: "post",
+                  body: JSON.stringify(payload),
+                  headers: {
+                    Authorization: `Bearer ${AIRTABLEAPIKEY}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              )
+                .then((res) => res.json())
+                .then((result) => {
+                  console.log(result);
+                  //send results to the client
+                  // res.json(result);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+
+              // to create a record we need to send a "POST" request with our base id, table name, our API key, and send a body with the new data we wish to add.
             })
             .catch((err) => {
               console.log(err);
               reject({ statusCode: 500, body: String(err) });
             });
-
-          // if (Data) {
-          //   return res.json({ source: "api", data: Data });
-          // }
-
-          //   client.setex(photosRedisKey, 3600, JSON.stringify(photos));
-
-          // Send JSON response to client
         }
+      } else {
+        var promisearr = PLAYERS.map((element) => {
+          return new Promise((resolve, reject) => {
+            fetch(`${API}/players/${element}`)
+              .then((response) => response.json())
+              .then((profiledata) => {
+                fetch(`${API}/players/${element}/wl`)
+                  .then((response) => response.json())
+                  .then((winlossdata) => {
+                    var tempdata = {
+                      ...profiledata,
+                      ...winlossdata,
+                    };
+
+                    resolve(tempdata);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    reject(err);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+                reject(err);
+              });
+          });
+        });
+
+        console.log("good stuff");
+
+        Promise.all(promisearr)
+          .then((result) => {
+            console.log(result);
+            RedisClient2.setex(photosRedisKey, 3600, JSON.stringify(result));
+
+            result.forEach((element) => {
+              console.log(element.profile.account_id);
+            });
+
+            resolve({
+              statusCode: 200,
+              body: JSON.stringify({ source: "CACHE FAILED", data: result }),
+            });
+
+            var datain = {
+              date: new Date().toString(),
+              flame: null,
+              cass: null,
+              casspro: null,
+              rizky: null,
+              td: null,
+              draco: null,
+              rizkypro: null,
+            };
+
+            result.forEach((element) => {
+              // console.log(element.profile.account_id);
+              // console.log(element.mmr_estimate.estimate);
+
+              PLAYERSWNAME.forEach((element2) => {
+                if (element.profile.account_id === parseInt(element2.id)) {
+                  // console.log(element.profile.account_id);
+
+                  var name = PLAYERSWNAME.filter((ele) =>
+                    ele.id === element2.id ? true : false
+                  );
+
+                  console.log(name);
+
+                  switch (name[0].name) {
+                    case "rizky":
+                      datain.rizky = String(element.mmr_estimate.estimate);
+                      break;
+                    case "draco":
+                      datain.draco = String(element.mmr_estimate.estimate);
+                      break;
+                    case "flame":
+                      datain.flame = String(element.mmr_estimate.estimate);
+                      break;
+                    case "td":
+                      datain.td = String(element.mmr_estimate.estimate);
+                      break;
+                    case "rizkypro":
+                      datain.rizkypro = String(element.mmr_estimate.estimate);
+                      break;
+                    case "cass":
+                      datain.cass = String(element.mmr_estimate.estimate);
+                      break;
+                    case "casspro":
+                      datain.casspro = String(element.mmr_estimate.estimate);
+                      break;
+                    default:
+                      break;
+                  }
+
+                  console.log(datain);
+                }
+              });
+            });
+
+            var payload = {
+              records: [
+                {
+                  fields: datain,
+                },
+              ],
+            };
+
+            console.log(payload);
+
+            fetch(
+              `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}`,
+              {
+                method: "post",
+                body: JSON.stringify(payload),
+                headers: {
+                  Authorization: `Bearer ${AIRTABLEAPIKEY}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+              .then((res) => res.json())
+              .then((result) => {
+                console.log(result);
+                //send results to the client
+                // res.json(result);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+
+            // to create a record we need to send a "POST" request with our base id, table name, our API key, and send a body with the new data we wish to add.
+          })
+          .catch((err) => {
+            console.log(err);
+            reject({ statusCode: 500, body: String(err) });
+          });
       }
     });
   });
@@ -123,7 +340,7 @@ exports.handler = async (event, context) => {
     });
 
     const resu = await respormise(RedisClient);
-    console.log(resu);
+    // console.log(resu);
     return resu;
   } else {
     RedisClient.on("error", (err) => {
@@ -135,155 +352,7 @@ exports.handler = async (event, context) => {
     });
 
     const resu = await respormise(RedisClient);
-    console.log(resu);
+    // console.log(resu);
     return resu;
   }
-
-  // console.log(res);
 };
-
-// const fetch = require("node-fetch");
-// const redis = require("redis");
-// // require('../../')
-// const RedisClient = redis.createClient({
-//   host: require("../../config/env").redishost,
-//   port: require("../../config/env").redisport,
-//   password: require("../../config/env").redispass,
-// });
-
-// RedisClient.on("error", (err) => {
-//   console.log("Error " + err);
-// });
-
-// RedisClient.on("connect", (err) => {
-//   console.log("Connected to redis ☄" + err);
-// });
-
-// const API = "https://api.opendota.com/api";
-// const PLAYERS = [
-//   "264853364",
-//   "167596568",
-//   "326010968",
-//   "140732052",
-//   "188126754",
-//   "172508840", //heshan
-//   "210855099",
-// ];
-
-// // app.get("/data", (req, res) => {});
-// const API_ENDPOINT = "https://icanhazdadjoke.com/";
-
-// exports.handler = async (event, context) => {
-//   return fetch(API_ENDPOINT, { headers: { "Accept": "application/json" } })
-//     .then(response => response.json())
-//     .then(data => ({
-//       statusCode: 200,
-//       body: data.joke
-//     }))
-//     .catch(error => ({ statusCode: 422, body: String(error) }));
-// };
-
-// exports.handler = function (event, context, callback) {
-//   // const photosRedisKey = "data:Dota";
-
-//   fetch(API_ENDPOINT, { headers: { Accept: "application/json" } })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       console.log(data.joke);
-//       callback({
-//         statusCode: 200,
-//         body: data.joke,
-//       });
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       callback({ statusCode: 422, body: String(error) });
-//     });
-
-// RedisClient.get(photosRedisKey, (err, data) => {
-//   if (!err) {
-//     if (data) {
-//       callback(null, {
-//         statusCode: 200,
-//         body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
-//       });
-
-//       // res.status(200).json({ source: "CACHE", data: JSON.parse(data) });
-//     } else {
-//       const Data = [];
-
-//       var promisearr = PLAYERS.map((element) => {
-//         return new Promise((resolve, reject) => {
-//           fetch(`${API}/players/${element}`)
-//             .then((response) => response.json())
-//             .then((profiledata) => {
-//               fetch(`${API}/players/${element}/wl`)
-//                 .then((response) => response.json())
-//                 .then((winlossdata) => {
-//                   // console.log(profiledata.data);
-//                   // console.log(winlossdata.data);
-
-//                   var tempdata = {
-//                     ...profiledata,
-//                     ...winlossdata,
-//                   };
-
-//                   resolve(tempdata);
-
-//                   console.log(tempdata);
-//                   // var ne = [...data, tempdata];
-//                   // setdata(ne);
-//                   Data.push(tempdata);
-//                   // setdata((pre) => {
-//                   //   return [...pre, tempdata];
-//                   // });
-//                 })
-//                 .catch((err) => {
-//                   console.log(err);
-//                   reject(err);
-//                 });
-//             })
-//             .catch((err) => {
-//               console.log(err);
-//               reject(err);
-//             });
-//         });
-//       });
-
-//       console.log("good stuff");
-//       console.log(Data);
-
-//       Promise.all(promisearr)
-//         .then((result) => {
-//           console.log(result);
-//           RedisClient.setex(photosRedisKey, 3600, JSON.stringify(result));
-
-//           callback(null, {
-//             statusCode: 200,
-//             body: JSON.stringify({ source: "OPEN DOTA API", data: result }),
-//           });
-
-//           // return res
-//           //   .status(200)
-//           //   .json({ source: "OPEN DOTA API", data: result });
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//           callback(null, {
-//             statusCode: 500,
-//             body: JSON.stringify({ err: err }),
-//           });
-//           // return res.status(500).json(err);
-//         });
-
-//       // if (Data) {
-//       //   return res.json({ source: "api", data: Data });
-//       // }
-
-//       //   client.setex(photosRedisKey, 3600, JSON.stringify(photos));
-
-//       // Send JSON response to client
-//     }
-//   }
-// });
-// };

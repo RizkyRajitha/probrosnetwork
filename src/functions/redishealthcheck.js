@@ -3,9 +3,9 @@ const redis = require("redis");
 const { REDISHOST, REDISPORT, REDISPASSWORD } = process.env;
 
 const RedisClient = redis.createClient({
-  host: REDISHOST || require("../../config/env").redishost,
-  port: REDISPORT || require("../../config/env").redisport,
-  password: REDISPASSWORD || require("../../config/env").redispass,
+  host: REDISHOST,
+  port: REDISPORT,
+  password: REDISPASSWORD,
 });
 
 let errs = [];
