@@ -184,7 +184,7 @@ let respormise = (RedisClient2) => {
             });
         }
       } else {
-        var promisearr = PLAYERS.map((element) => {
+        var promisearr2 = PLAYERS.map((element) => {
           return new Promise((resolve, reject) => {
             fetch(`${API}/players/${element}`)
               .then((response) => response.json())
@@ -213,7 +213,7 @@ let respormise = (RedisClient2) => {
 
         console.log("good stuff");
 
-        Promise.all(promisearr)
+        Promise.all(promisearr2)
           .then((result) => {
             console.log(result);
             RedisClient2.setex(photosRedisKey, 3600, JSON.stringify(result));
