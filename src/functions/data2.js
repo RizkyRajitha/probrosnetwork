@@ -227,71 +227,71 @@ let respormise = (RedisClient2) => {
               body: JSON.stringify({ source: "CACHE FAILED", data: result }),
             });
 
-            var datain = {
-              date: new Date().toString(),
-              flame: null,
-              cass: null,
-              casspro: null,
-              rizky: null,
-              td: null,
-              draco: null,
-              rizkypro: null,
-            };
+            // var datain = {
+            //   date: new Date().toString(),
+            //   flame: null,
+            //   cass: null,
+            //   casspro: null,
+            //   rizky: null,
+            //   td: null,
+            //   draco: null,
+            //   rizkypro: null,
+            // };
 
-            result.forEach((element) => {
-              // console.log(element.profile.account_id);
-              // console.log(element.mmr_estimate.estimate);
+            // result.forEach((element) => {
+            //   // console.log(element.profile.account_id);
+            //   // console.log(element.mmr_estimate.estimate);
 
-              PLAYERSWNAME.forEach((element2) => {
-                if (element.profile.account_id === parseInt(element2.id)) {
-                  // console.log(element.profile.account_id);
+            //   PLAYERSWNAME.forEach((element2) => {
+            //     if (element.profile.account_id === parseInt(element2.id)) {
+            //       // console.log(element.profile.account_id);
 
-                  var name = PLAYERSWNAME.filter((ele) =>
-                    ele.id === element2.id ? true : false
-                  );
+            //       var name = PLAYERSWNAME.filter((ele) =>
+            //         ele.id === element2.id ? true : false
+            //       );
 
-                  console.log(name);
+            //       console.log(name);
 
-                  switch (name[0].name) {
-                    case "rizky":
-                      datain.rizky = String(element.mmr_estimate.estimate);
-                      break;
-                    case "draco":
-                      datain.draco = String(element.mmr_estimate.estimate);
-                      break;
-                    case "flame":
-                      datain.flame = String(element.mmr_estimate.estimate);
-                      break;
-                    case "td":
-                      datain.td = String(element.mmr_estimate.estimate);
-                      break;
-                    case "rizkypro":
-                      datain.rizkypro = String(element.mmr_estimate.estimate);
-                      break;
-                    case "cass":
-                      datain.cass = String(element.mmr_estimate.estimate);
-                      break;
-                    case "casspro":
-                      datain.casspro = String(element.mmr_estimate.estimate);
-                      break;
-                    default:
-                      break;
-                  }
+            //       switch (name[0].name) {
+            //         case "rizky":
+            //           datain.rizky = String(element.mmr_estimate.estimate);
+            //           break;
+            //         case "draco":
+            //           datain.draco = String(element.mmr_estimate.estimate);
+            //           break;
+            //         case "flame":
+            //           datain.flame = String(element.mmr_estimate.estimate);
+            //           break;
+            //         case "td":
+            //           datain.td = String(element.mmr_estimate.estimate);
+            //           break;
+            //         case "rizkypro":
+            //           datain.rizkypro = String(element.mmr_estimate.estimate);
+            //           break;
+            //         case "cass":
+            //           datain.cass = String(element.mmr_estimate.estimate);
+            //           break;
+            //         case "casspro":
+            //           datain.casspro = String(element.mmr_estimate.estimate);
+            //           break;
+            //         default:
+            //           break;
+            //       }
 
-                  console.log(datain);
-                }
-              });
-            });
+            //       console.log(datain);
+            //     }
+            //   });
+            // });
 
-            var payload = {
-              records: [
-                {
-                  fields: datain,
-                },
-              ],
-            };
+            // var payload = {
+            //   records: [
+            //     {
+            //       fields: datain,
+            //     },
+            //   ],
+            // };
 
-            console.log(payload);
+            // console.log(payload);
 
             // fetch(
             //   `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}`,
