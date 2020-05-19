@@ -9,7 +9,7 @@ const AIRTABLETABLENAME =
   process.env.AIRTABLETABLENAME ||
   require("../../config/env").AIRTABLETABLENAME;
 
-console.log(REDISHOST, REDISPORT, AIRTABLEBASEID);
+// console.log(REDISHOST, REDISPORT, AIRTABLEBASEID);
 
 const API = "https://api.opendota.com/api";
 const PLAYERS = [

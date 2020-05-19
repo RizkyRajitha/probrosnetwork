@@ -4,7 +4,9 @@ import "./landing.css";
 import Card from "../../components/card";
 import axios from "axios";
 
+// const localapi = "http://localhost:9000/data2";
 const API = "https://heshds.netlify.app";
+// const API = "";
 
 const Movie = (props) => {
   const [data, setdata] = useState([]);
@@ -18,6 +20,7 @@ const Movie = (props) => {
   useEffect(() => {
     axios
       .get(`${API}/.netlify/functions/data2`)
+      // .get(localapi)
       .then((result) => {
         // console.log(result.data.data);
         setdata(result.data.data);
