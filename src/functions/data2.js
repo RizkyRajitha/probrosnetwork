@@ -293,26 +293,26 @@ let respormise = (RedisClient2) => {
 
             console.log(payload);
 
-            fetch(
-              `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}`,
-              {
-                method: "post",
-                body: JSON.stringify(payload),
-                headers: {
-                  Authorization: `Bearer ${AIRTABLEAPIKEY}`,
-                  "Content-Type": "application/json",
-                },
-              }
-            )
-              .then((res) => res.json())
-              .then((result) => {
-                console.log(result);
-                //send results to the client
-                // res.json(result);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            // fetch(
+            //   `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}`,
+            //   {
+            //     method: "post",
+            //     body: JSON.stringify(payload),
+            //     headers: {
+            //       Authorization: `Bearer ${AIRTABLEAPIKEY}`,
+            //       "Content-Type": "application/json",
+            //     },
+            //   }
+            // )
+            //   .then((res) => res.json())
+            //   .then((result) => {
+            //     console.log(result);
+            //     //send results to the client
+            //     // res.json(result);
+            //   })
+            //   .catch((err) => {
+            //     console.log(err);
+            //   });
 
             // to create a record we need to send a "POST" request with our base id, table name, our API key, and send a body with the new data we wish to add.
           })
