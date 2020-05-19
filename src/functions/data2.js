@@ -101,12 +101,8 @@ let respormise = (RedisClient2) => {
               };
 
               result.forEach((element) => {
-       
-
                 PLAYERSWNAME.forEach((element2) => {
                   if (element.profile.account_id === parseInt(element2.id)) {
-                    
-
                     var name = PLAYERSWNAME.filter((ele) =>
                       ele.id === element2.id ? true : false
                     );
@@ -168,10 +164,17 @@ let respormise = (RedisClient2) => {
                 .then((res) => res.json())
                 .then((result) => {
                   console.log(result);
-               
+                  resolve({
+                    statusCode: 200,
+                    body: JSON.stringify({
+                      source: "OPEN DOTA API",
+                      data: result,
+                    }),
+                  });
                 })
                 .catch((err) => {
                   console.log(err);
+                  reject({ statusCode: 500, body: String(err) });
                 });
 
               // to create a record we need to send a "POST" request with our base id, table name, our API key, and send a body with the new data we wish to add.
