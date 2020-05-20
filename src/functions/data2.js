@@ -40,7 +40,7 @@ let respormise = (RedisClient2) => {
     RedisClient2.get(photosRedisKey, (err, data) => {
       // console.log(err, data);
       if (!err) {
-        if (data) {
+        if (!data) {
           resolve({
             statusCode: 200,
             body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
@@ -84,10 +84,10 @@ let respormise = (RedisClient2) => {
                 console.log(element.profile.account_id);
               });
 
-              resolve({
-                statusCode: 200,
-                body: JSON.stringify({ source: "OPEN DOTA API", data: result }),
-              });
+              // resolve({
+              //   statusCode: 200,
+              //   body: JSON.stringify({ source: "OPEN DOTA API", data: result }),
+              // });
 
               var datain = {
                 date: new Date().toString(),
@@ -162,13 +162,14 @@ let respormise = (RedisClient2) => {
                 }
               )
                 .then((res) => res.json())
-                .then((result) => {
-                  console.log(result);
+                .then((resultfmairtable) => {
+                  console.log(resultfmairtable);
                   resolve({
                     statusCode: 200,
                     body: JSON.stringify({
                       source: "OPEN DOTA API",
                       data: result,
+                      graph: resultfmairtable,
                     }),
                   });
                 })
