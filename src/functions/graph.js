@@ -16,7 +16,7 @@ const headers = {
 
 let respormise = new Promise((resolve, reject) => {
   fetch(
-    `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}?maxRecords=3&view=Grid%20view`,
+    `https://api.airtable.com/v0/${AIRTABLEBASEID}/${AIRTABLETABLENAME}?view=Grid%20view&filterByFormula=NOT({date} = '')`,
     {
       headers: {
         Authorization: `Bearer ${AIRTABLEAPIKEY}`,
