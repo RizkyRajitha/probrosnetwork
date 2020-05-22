@@ -14,7 +14,7 @@ const Graph = (props) => {
 
     axios
       .get(`${API}/.netlify/functions/graph`)
-    //   .get(localapi)
+      //   .get(localapi)
       .then((result) => {
         console.log(result.data.data.records);
 
@@ -105,11 +105,11 @@ const Graph = (props) => {
             color: "hsl(253, 70%, 50%)",
             data: temparr_casspro,
           },
-          {
-            id: "rizkypro",
-            color: "hsl(253, 70%, 50%)",
-            data: temparr_rizkypro,
-          },
+          // {
+          //   id: "rizkypro",
+          //   color: "hsl(253, 70%, 50%)",
+          //   data: temparr_rizkypro,
+          // },
         ]);
       })
       .catch((err) => {
