@@ -108,32 +108,43 @@ const Movie = (props) => {
     <div className="maindiv">
       <header className="navbar">
         <section className="navbar-section">
-          <a href="#" className="btn btn-link"></a>
+          <a href="/graph" className="btn btn-link">
+            {" "}
+          </a>
         </section>{" "}
         <section className="navbar-section">
-          <a href="#" className="btn btn-link"></a>
+          {/* <a href="/graph" className="btn btn-link">
+            Graph
+          </a> */}
         </section>{" "}
         <section className="navbar-section">
-          <a href="#" className="btn btn-link"></a>
+          <a href="/" className="btn btn-link">
+            {" "}
+          </a>
           PROBROS
         </section>
         <section className="navbar-center">
-          <img src="https://img.icons8.com/color/48/000000/dota.png" />
+          <img
+            src="https://img.icons8.com/color/48/000000/dota.png"
+            alt="dota logo"
+          />
         </section>{" "}
         <section className="navbar-section">
-          <a href="#" className="btn btn-link">
+          <a href="/" className="btn btn-link">
             {"                 "}
           </a>
         </section>{" "}
         <section className="navbar-section">
-          <a href="#" className="btn btn-link">
+          <a href="/" className="btn btn-link">
             {"                 "}
           </a>
           NETWORK
         </section>
         <section className="navbar-section">
-          <span className="card-subtitle">Served via {source}</span>
-          <a href="#" className="btn btn-link"></a>{" "}
+          <span className="card-subtitle">Served via {source+"  "}</span>
+          <a href="/graph" className="btn btn-link">
+            Graph
+          </a>
         </section>
       </header>
 
@@ -165,7 +176,7 @@ const Movie = (props) => {
 
         <div className={modalopen ? "modal active" : "modal"} id="modal-id">
           <a
-            href="#close"
+            href="#"
             onClick={() => setmodalopen(false)}
             className="modal-overlay"
             aria-label="Close"

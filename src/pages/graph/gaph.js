@@ -119,7 +119,7 @@ const Graph = (props) => {
 
   return (
     <div id="graphdiv" className="container chartdiv">
-      <App data={data} linecolor="	#ff4000" legendName={"MMR"} />
+      <App data={data} linecolor="#ff4000" legendName={"MMR"} />
     </div>
   );
 };
