@@ -24,7 +24,7 @@ const Graph = (props) => {
         var temparr_cass = [];
         var temparr_td = [];
         var temparr_casspro = [];
-        var temparr_rizkypro = [];
+        // var temparr_rizkypro = [];
 
         result.data.data.records.forEach((element) => {
           var dates = new Date(element.fields.date).toLocaleString();
@@ -65,11 +65,11 @@ const Graph = (props) => {
           };
           temparr_casspro.push(temp_casspro);
 
-          var temp_rizkypro = {
-            x: dates,
-            y: element.fields.rizkypro,
-          };
-          temparr_rizkypro.push(temp_rizkypro);
+          // var temp_rizkypro = {
+          //   x: dates,
+          //   y: element.fields.rizkypro,
+          // };
+          // temparr_rizkypro.push(temp_rizkypro);
         });
 
         console.log(temparr_rizky);

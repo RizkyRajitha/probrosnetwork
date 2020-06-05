@@ -78,7 +78,7 @@ let respormise = (RedisClient2) => {
           Promise.all(promisearr)
             .then((result) => {
               console.log(result);
-              RedisClient2.setex(photosRedisKey, 3600, JSON.stringify(result));
+              RedisClient2.setex(photosRedisKey, 43200, JSON.stringify(result));
 
               result.forEach((element) => {
                 console.log(element.profile.account_id);
