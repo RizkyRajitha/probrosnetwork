@@ -40,7 +40,7 @@ let respormise = (RedisClient2) => {
     RedisClient2.get(photosRedisKey, (err, data) => {
       // console.log(err, data);
       if (!err) {
-        if (false) {
+        if (data) {
           resolve({
             statusCode: 200,
             body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
@@ -78,7 +78,7 @@ let respormise = (RedisClient2) => {
           Promise.all(promisearr)
             .then((result) => {
               console.log(result);
-              RedisClient2.setex(photosRedisKey, 7200, JSON.stringify(result));
+              RedisClient2.setex(photosRedisKey, 43200, JSON.stringify(result));
 
               result.forEach((element) => {
                 console.log(element.profile.account_id);
