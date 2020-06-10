@@ -40,7 +40,7 @@ let respormise = (RedisClient2) => {
     RedisClient2.get(photosRedisKey, (err, data) => {
       // console.log(err, data);
       if (!err) {
-        if (data) {
+        if (false) {
           resolve({
             statusCode: 200,
             body: JSON.stringify({ source: "CACHE", data: JSON.parse(data) }),
