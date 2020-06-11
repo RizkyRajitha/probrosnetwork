@@ -26,7 +26,7 @@ const Graph = (props) => {
         var temparr_casspro = [];
         // var temparr_rizkypro = [];
 
-        result.data.data.records.forEach((element) => {
+        result.data.data.records.reverse().forEach((element) => {
           var dates = new Date(element.fields.date).toLocaleString();
 
           var temp_rizky = {
