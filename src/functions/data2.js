@@ -34,6 +34,12 @@ const PLAYERSWNAME = [
 
 let RedisClient = null;
 
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+};
+
 let respormise = (RedisClient2) => {
   return new Promise((resolve, reject) => {
     const photosRedisKey = "data:Dota";
@@ -165,6 +171,7 @@ let respormise = (RedisClient2) => {
                 .then((resultfmairtable) => {
                   console.log(resultfmairtable);
                   resolve({
+                    headers: headers,
                     statusCode: 200,
                     body: JSON.stringify({
                       source: "OPEN DOTA API",
@@ -175,7 +182,11 @@ let respormise = (RedisClient2) => {
                 })
                 .catch((err) => {
                   console.log(err);
-                  reject({ statusCode: 500, body: String(err) });
+                  reject({
+                    headers: headers,
+                    statusCode: 500,
+                    body: String(err),
+                  });
                 });
 
               // to create a record we need to send a "POST" request with our base id, table name, our API key, and send a body with the new data we wish to add.
