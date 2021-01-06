@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@nivo/line": "^0.61.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "encoding": "^0.1.12",
     "netlify-lambda": "^1.6.3",
     "node-fetch": "^2.6.0",
